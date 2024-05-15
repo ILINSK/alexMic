@@ -30,8 +30,6 @@ services:
       - "8001:80"
     depends_on:
       - db
-
-
   keycloak:
     volumes:
       - ./imports:/opt/jboss/keycloak/imports
@@ -113,6 +111,20 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/rootfs:ro
+
+  alertmanager:
+    image: prom/alertmanager:v0.26.0
+    container_name: alertmanager
+    ports:
+      - 9093:9093
+    volumes:
+      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    restart: always
+    networks:
+      - app-network
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
 
 
 networks:
